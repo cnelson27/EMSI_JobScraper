@@ -10,7 +10,7 @@ class QuotesSpider(scrapy.Spider):
             'EMSI': 'https://api.lever.co/v0/postings/economicmodeling?mode=json'
         }
 
-        for key, value in urls:
+        for key, value in urls.items():
             yield scrapy.Request(value, callback=self.parse, meta={'company': key})
 
     def parse(self, response):

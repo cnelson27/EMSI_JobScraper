@@ -1,5 +1,6 @@
 import scrapy
 import json
+import logging
 
 class QuotesSpider(scrapy.Spider):
     name = "emsi_jobs"
@@ -13,6 +14,7 @@ class QuotesSpider(scrapy.Spider):
 
     def parse(self, response):
         data = json.loads(response.text)
+        logging.info(msg="Data count: " + str(len(data)))
         for job in data:
             yield {
                 'id': job["id"],
@@ -21,10 +23,6 @@ class QuotesSpider(scrapy.Spider):
                 'description': job["descriptionPlain"],
                 'company': 'EMSI',
                 'creation_time': job["createdAt"],
-                'commitment': job["categories"]["commitment"],
-                'department': job["categories"]["department"],
-                'location': job["categories"]["location"],
-                'team': job["categories"]["team"],
-                'job_responsibilities': job["lists"][0]["content"],
-                'specific_qualifications': job["lists"][1]["content"]
+                'categories': job["categories"],
+                'lists': job["lists"]
             }

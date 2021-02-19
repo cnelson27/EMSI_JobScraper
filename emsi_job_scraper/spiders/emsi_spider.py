@@ -16,7 +16,6 @@ class QuotesSpider(scrapy.Spider):
     def parse(self, response):
         company = response.meta.get('company')
         data = json.loads(response.text)
-        logging.info(msg="Data count: " + str(len(data)))
         for job in data:
             yield {
                 'id': job["id"],
@@ -24,7 +23,7 @@ class QuotesSpider(scrapy.Spider):
                 'job_title': job["text"],
                 'description': job["descriptionPlain"],
                 'company': company,
-                'creation_time': job["createdAt"],
+                'createdAt': job["createdAt"],
                 'categories': job["categories"],
                 'lists': job["lists"]
             }

@@ -6,13 +6,15 @@ class QuotesSpider(scrapy.Spider):
     name = "emsi_jobs"
 
     def start_requests(self):
-        urls = [
-            'https://api.lever.co/v0/postings/economicmodeling?mode=json'
-        ]
-        for url in urls:
-            yield scrapy.Request(url, callback=self.parse)
+        urls = {
+            'EMSI': 'https://api.lever.co/v0/postings/economicmodeling?mode=json'
+        }
+
+        for key, value in urls:
+            yield scrapy.Request(value, callback=self.parse, meta={'company': key})
 
     def parse(self, response):
+        company = response.meta.get('company')
         data = json.loads(response.text)
         logging.info(msg="Data count: " + str(len(data)))
         for job in data:
@@ -21,7 +23,7 @@ class QuotesSpider(scrapy.Spider):
                 'url': job["hostedUrl"],
                 'job_title': job["text"],
                 'description': job["descriptionPlain"],
-                'company': 'EMSI',
+                'company': company,
                 'creation_time': job["createdAt"],
                 'categories': job["categories"],
                 'lists': job["lists"]
